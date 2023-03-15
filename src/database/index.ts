@@ -6,7 +6,10 @@ export const databaseConfig = async (app: express.Application) => {
     const dbUrl = process.env.DB_URL;
     const dbName = process.env.DB_NAME;
     if(dbUrl && dbName) {
-        const mongoString = `${process.env.DB_URL}/${process.env.DB_NAME}`;
+        let mongoString = `${process.env.DB_URL}/${process.env.DB_NAME}?authSource=admin`;
+        if(process.env.NODE_ENV !== 'dev') {
+            mongoString = `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.DB_HOST}:${process.env.MONGODB_PORT}/${process.env.DB_NAME}?authSource=admin`;
+        }
 
         mongoose.connect(mongoString, {
             retryWrites: true,
@@ -17,7 +20,7 @@ export const databaseConfig = async (app: express.Application) => {
     
         database.on('error', (error) => {
             // tslint:disable-next-line:no-console
-            console.log(error)
+            console.log('[DB Error]', error)
         })
     
         database.once('connected', (ans) => {
