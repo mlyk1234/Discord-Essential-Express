@@ -2,15 +2,12 @@ version: "3"
 
 services:
   app:
-    links:
-      - mongo
     build: .
     env_file: ./.env
     ports:
       - 8080:8080
     networks:
       - internal
-
 volumes:
   mongodata:
 networks:
