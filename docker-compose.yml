@@ -2,6 +2,7 @@ version: "3"
 
 services:
   app:
+    container_name: app
     build: .
     env_file: ./.env
     ports:
@@ -9,12 +10,15 @@ services:
     networks:
       - internal
   nginx:
+    container_name: nginx
     image: nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs/selfsigned.pem:/etc/nginx/certs/selfsigned.pem
+      - ./certs/selfsigned.key:/etc/nginx/certs/selfsigned.key
     depends_on:
       - app
     networks:
