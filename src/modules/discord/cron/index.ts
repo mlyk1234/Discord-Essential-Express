@@ -59,7 +59,7 @@ export class discordCron extends discordJob {
                 // client.user.setActivity('Playing Games', {type: 'PLAYING'})
                 // await client.user.setAvatar('https://i.pinimg.com/736x/93/ca/99/93ca99fa3aab09c8c33ef01f3362bf67.jpg')
             }
-        }, 60000 * 2)
+        }, 60000 * 4)
         // Discord Official: Account will be set to idle after 5 minutes of inactivity
     }
 
