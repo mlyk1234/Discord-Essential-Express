@@ -259,7 +259,8 @@ export const verifyBot = async (loginToken: string) => {
     }
 }
 interface IBaseInterface {
-    loginToken: string
+    loginToken: string,
+    reply_to?: string
 }
 export interface ISendText extends IBaseInterface {
     channel_id: string,
@@ -288,7 +289,7 @@ export const sendText = async (payload: ISendText, controller?: boolean) => {
                 }
             )
         }
-
+        console.log(payload)
         if(controller) {
             const findBot = await initDiscordBot.findOne({
                 loginToken: payload.loginToken
@@ -303,6 +304,7 @@ export const sendText = async (payload: ISendText, controller?: boolean) => {
                 channel_id: payload.channel_id,
                 text: payload.text,
                 is_reply: payload.is_reply,
+                reply_to: payload.reply_to,
                 message_id: payload.message_id,
                 scheduledAt: payload.scheduledAt,
                 sent: payload.scheduledAt ? false : true
@@ -330,6 +332,7 @@ interface ISendReact extends IBaseInterface {
     channel_id: string,
     guild_id: string,
     message_id: string,
+    scheduledAt?: number
     react: string[],
     config?: any;
 }
@@ -351,6 +354,29 @@ export const sendReact = async (payload: ISendReact) => {
                 }
             )
         }
+
+        const findBot = await initDiscordBot.findOne({
+            loginToken: payload.loginToken
+        })
+        const acc_data = {
+            acc_id: findBot.acc_id,
+            username: findBot.username,
+            loginToken: findBot.loginToken
+        }
+        const logData = {
+            guild_id: payload.guild_id,
+            channel_id: payload.channel_id,
+            react: payload.react,
+            is_reply: false,
+            reply_to: payload.reply_to,
+            message_id: payload.message_id,
+            scheduledAt: payload.scheduledAt,
+            sent: payload.scheduledAt ? false : true
+        }
+        await initDiscordBotEvent.create({
+            acc_data: acc_data,
+            ...logData
+        })
         client.destroy();
     } catch (error) {
         console.log(error)

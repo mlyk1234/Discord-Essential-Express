@@ -1,4 +1,4 @@
-import { insertGuild, getGuilds, updateQA, getQA } from './manager.service';
+import { insertGuild, getGuilds, updateQA, getQA, getLogs } from './manager.service';
 import { auth } from '../../../utils/auth-validator/index';
 import { expressValidator } from '../../../utils/class-validation/index';
 import * as express from "express";
@@ -84,32 +84,21 @@ export const discordManagerController = (app: express.Application) => {
             })
         }
     })
-    // LTS
-    // app.post(`${defaultURL}/claim-faucet-v2`,
-    // async (req: express.Request, res: express.Response<IResponse>, next: express.NextFunction) => {
 
-    //     const body = plainToClass(FaucetDTO, req.body);
-        
-    //     try {
-    //         const err: ValidationError[] = await validate(body);
-    //         if(err.length) {
-    //             const validation = classValidatorParser(err);
-    //             res.status(406).json(validation)
-    //         } else {
-    //             await validateClaim(req.body);
-    //             const result = await dispatchClaimEventV2(req.body);
-    //             initLogUser.create({
-    //                 ...req.body,
-    //                 amount: 200,
-    //                 timestamp: new Date().getTime()
-    //             })
-    //             res.status(200).json({
-    //                 result: result
-    //             })
-    //         }
-    //     } catch (error) {
-    //         res.status(404).json(error);
-    //     }
-    // })
-    // LTS
+    app.get(`${defaultURL}/${tag}/logs/:acc_id?`, 
+    async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
+        try {
+            const result = await getLogs(req.params.acc_id);
+            res.status(200).json({
+                statusCode: 200,
+                message: "Success.",
+                data: result
+            })
+        } catch (error) {
+            res.status(400).json({
+                statusCode: 400,
+                message: error
+            })
+        }
+    })
 }

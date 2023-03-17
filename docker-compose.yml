@@ -1,20 +1,6 @@
 version: "3"
 
 services:
-  mongo:
-    image: mongo
-    container_name: mongo
-    restart: unless-stopped
-    env_file: ./.env
-    environment:
-     - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
-     - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
-    ports:
-     - $MONGODB_PORT:27017
-    volumes:
-     - mongodata:/data/db
-    networks:
-      - internal
   app:
     links:
       - mongo

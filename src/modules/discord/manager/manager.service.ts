@@ -1,6 +1,7 @@
 import initQuestionnaire, { IQuestionnaire } from "../../../database/models/questionnaire";
 import initGuild from "../../../database/models/guild";
 import initGuildSetting from "../../../database/models/guild-settings";
+import initDiscordBotEvent from "../../../database/models/bot-event";
 
 export const insertGuild = async (payload: any) => {
     try {
@@ -54,6 +55,17 @@ export const updateQA = async (payload: IQuestionnaire & IQuestionnaire[]) => {
                 throw `[Duplicated]: ${payload.text}`
             });
         }
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getLogs = async (acc_id?: string | null | undefined) => {
+    try {
+        if(acc_id) return await initDiscordBotEvent.find({
+            "acc_data.acc_id": acc_id
+        });
+        return await initDiscordBotEvent.find();
     } catch (error) {
         throw error;
     }

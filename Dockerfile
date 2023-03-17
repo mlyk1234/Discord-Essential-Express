@@ -1,7 +1,14 @@
 FROM node:18.12.1-alpine
-WORKDIR /app
-COPY package*.json .
-RUN npm install
+
+RUN npm install -g ts-node typescript
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
 COPY . .
+
+RUN npm install
+
 EXPOSE 8080
+
 CMD ["npm", "start"]
