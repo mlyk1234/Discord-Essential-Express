@@ -1,6 +1,15 @@
 version: "3"
 
 services:
+  frontend:
+    image: mlyk1234/combot-frontend
+    container_name: frontend
+    ports: 
+    - 3000:3000
+    networks: 
+    - internal
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html/;
   app:
     container_name: app
     build: .
@@ -16,11 +25,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ./:/var/www
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./certs/selfsigned.pem:/etc/nginx/certs/selfsigned.pem
-      - ./certs/selfsigned.key:/etc/nginx/certs/selfsigned.key
     depends_on:
-      - app
+      - frontend
     networks:
       - internal
 volumes:

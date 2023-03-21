@@ -66,13 +66,18 @@ export class discordCron extends discordJob {
     }
 
     async initializeBot() {
-        const result = await initDiscordBot.find();
-        for await (const [index, b] of result.entries()) {
-            const client = new Client({checkUpdate: false});
-            await client.login(b.loginToken);
-            // client.user.setActivity('Playing Games', {type: 'PLAYING'})
-            await client.user.setAvatar(randomAvatar[index])
+        try {
+            const result = await initDiscordBot.find();
+            for await (const [index, b] of result.entries()) {
+                const client = new Client({checkUpdate: false});
+                await client.login(b.loginToken);
+                // client.user.setActivity('Playing Games', {type: 'PLAYING'})
+                await client.user.setAvatar(randomAvatar[index])
+            }
+        } catch (error) {
+            console.log('[Error] in initializeBot')
         }
+
     }
 }
 
