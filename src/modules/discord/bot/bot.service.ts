@@ -70,6 +70,45 @@ const verifyInvite = async (guild_id: string) => {
 }
 
 export const botJoin = async (payload: any) => {
+    try {
+        const bot = await initDiscordBot.findOne({
+            acc_id: payload.acc_id
+        });
+        if(!bot) throw "Bot Not Found.";
+
+        const guild_data = await verifyInvite(payload.guild_id);
+        const { settings } = bot;
+        settings.forEach((v) => {
+            if(v.joinedGuild === guild_data.guild_id) {
+                throw "Already Joined.";
+            }
+        })
+
+        if(bot) {
+            await initDiscordBot.findOneAndUpdate({
+                acc_id: payload.acc_id
+            }, {
+                $push: {
+                    settings: {
+                        joinedGuild: guild_data.guild_id,
+                        guildName: guild_data.guild_name
+                    }
+                }
+            }, {
+                upsert: true
+            })
+
+        } else {
+            throw "Bot Not Found.";
+        }
+
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
+// Automation Mode
+export const botJoinV2 = async (payload: any) => {
     const client = new Client({
         captchaService: '2captcha',
         captchaKey: 'e46f260e341d9407a4abf7c8a7f12beb'
@@ -127,6 +166,7 @@ export const botJoin = async (payload: any) => {
         throw error
     }
 }
+// Automation Mode
 
 export const botJoinAcceptance = async (guild_id: string, bot: IDiscordBot) => {
     try {
@@ -264,7 +304,9 @@ interface IBaseInterface {
 }
 export interface ISendText extends IBaseInterface {
     channel_id: string,
+    channel_name: string,
     guild_id: string,
+    guild_name: string,
     text: string,
     is_reply?: boolean,
     message_id?: string,
@@ -289,7 +331,6 @@ export const sendText = async (payload: ISendText, controller?: boolean) => {
                 }
             )
         }
-        console.log(payload)
         if(controller) {
             const findBot = await initDiscordBot.findOne({
                 loginToken: payload.loginToken
@@ -301,7 +342,9 @@ export const sendText = async (payload: ISendText, controller?: boolean) => {
             }
             const logData = {
                 guild_id: payload.guild_id,
+                guild_name: payload.guild_name,
                 channel_id: payload.channel_id,
+                channel_name: payload.channel_name,
                 text: payload.text,
                 is_reply: payload.is_reply,
                 reply_to: payload.reply_to,

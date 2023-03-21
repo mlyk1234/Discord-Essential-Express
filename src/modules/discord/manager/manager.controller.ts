@@ -1,4 +1,4 @@
-import { insertGuild, getGuilds, updateQA, getQA, getLogs } from './manager.service';
+import { insertGuild, getGuilds, updateQA, getQA, getLogs, removeGuild } from './manager.service';
 import { auth } from '../../../utils/auth-validator/index';
 import { expressValidator } from '../../../utils/class-validation/index';
 import * as express from "express";
@@ -32,6 +32,20 @@ export const discordManagerController = (app: express.Application) => {
                 statusCode: 200,
                 message: "Getting all guilds done.",
                 data: result
+            });
+        } catch (error) {
+            res.status(400).json(error)
+        }
+    });
+
+    app.post(`${defaultURL}/${tag}/remove-guild/:id`,
+    async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
+        try {
+            await auth(req);
+            const result = await removeGuild(req.params.id);
+            res.status(200).json({
+                statusCode: 200,
+                message: "Deleted."
             });
         } catch (error) {
             res.status(400).json(error)

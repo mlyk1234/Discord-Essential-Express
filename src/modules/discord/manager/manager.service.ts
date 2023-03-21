@@ -2,6 +2,7 @@ import initQuestionnaire, { IQuestionnaire } from "../../../database/models/ques
 import initGuild from "../../../database/models/guild";
 import initGuildSetting from "../../../database/models/guild-settings";
 import initDiscordBotEvent from "../../../database/models/bot-event";
+import initDiscordBot from "../../../database/models/discord-bot";
 
 export const insertGuild = async (payload: any) => {
     try {
@@ -19,9 +20,22 @@ export const insertGuild = async (payload: any) => {
 
 export const getGuilds = async () => {
     try {
-        return await initGuild.find({
+        const guilds = await initGuild.find({
             status: "A"
-        }).select(["guild_name", "guild_id"]);
+        }).select(["guild_name", "guild_id", "guild_link"]);
+        return guilds;
+    } catch (error) {
+        throw "Something went wrong in getting guilds"
+    }
+}
+
+export const removeGuild = async (guild_id: string) => {
+    try {
+        const guilds = await initGuild.deleteOne({
+            guild_id: guild_id
+        })
+
+        return guilds;
     } catch (error) {
         throw "Something went wrong in getting guilds"
     }

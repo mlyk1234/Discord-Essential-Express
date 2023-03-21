@@ -14,7 +14,9 @@ export class discordJob {
                 if(timestamp >= job.scheduledAt && !job.sent) {
                     const payload: ISendText = {
                         channel_id: job.channel_id,
+                        channel_name: job.channel_name,
                         guild_id: job.guild_id,
+                        guild_name: job.guild_name,
                         text: job.text,
                         loginToken: job.acc_data.loginToken
                     }
