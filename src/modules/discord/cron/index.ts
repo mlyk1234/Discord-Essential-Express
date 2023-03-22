@@ -53,13 +53,17 @@ export class discordCron extends discordJob {
     async awakeBot() {
         await this.initializeBot();
         setInterval(async () => {
-            const result = await initDiscordBot.find();
-            for await (const [index, b] of result.entries()) {
-                const client = new Client({checkUpdate: false});
-                await client.login(b.loginToken);
-                client.user.setStatus('online');
-                // client.user.setActivity('Playing Games', {type: 'PLAYING'})
-                // await client.user.setAvatar('https://i.pinimg.com/736x/93/ca/99/93ca99fa3aab09c8c33ef01f3362bf67.jpg')
+            try {
+                const result = await initDiscordBot.find();
+                for await (const [index, b] of result.entries()) {
+                    const client = new Client({checkUpdate: false});
+                    await client.login(b.loginToken);
+                    client.user.setStatus('online');
+                    // client.user.setActivity('Playing Games', {type: 'PLAYING'})
+                    // await client.user.setAvatar('https://i.pinimg.com/736x/93/ca/99/93ca99fa3aab09c8c33ef01f3362bf67.jpg')
+                }
+            } catch (error) {
+                console.log('[Something went wrong] in awakeBot ==> setInterval')
             }
         }, 60000 * 4)
         // Discord Official: Account will be set to idle after 5 minutes of inactivity
