@@ -1,4 +1,4 @@
-import { addBot, getBots, botJoin, verifyBot, getBotByAccId, botListenChannel, botJoinVoice, sendText, sendReact, botJoinV2 } from './bot.service';
+import { addBot, getBots, botJoin, verifyBot, getBotByAccId, botListenChannel, botJoinVoice, sendText, sendReact, botJoinV2, editBot } from './bot.service';
 import { auth, authValidator } from '../../../utils/auth-validator/index';
 import { expressValidator } from '../../../utils/class-validation/index';
 import * as express from "express";
@@ -63,6 +63,21 @@ export const discordBotController = (app: express.Application) => {
     async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
         try {
             await addBot(req.body)
+            res.json({
+                statusCode: 200,
+                message: "Success."
+            })
+        } catch (error) {
+            res.status(400).json({
+                ...error
+            })
+        }
+    })
+
+    app.put(`${defaultURL}/${tag}/edit-bot`, 
+    async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
+        try {
+            await editBot(req.body)
             res.json({
                 statusCode: 200,
                 message: "Success."

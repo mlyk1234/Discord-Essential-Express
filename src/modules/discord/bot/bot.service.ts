@@ -11,7 +11,9 @@ import initDiscordBotEvent from "../../../database/models/bot-event";
 import initGuildSetting from "../../../database/models/guild-settings";
 export const getBots = async () => {
     try {
-        const result = await initDiscordBot.find();
+        const result = await initDiscordBot.find({
+            status: 'A'
+        });
         return result
     } catch (error) {
         throw "Something went wrong [getBots]."
@@ -34,7 +36,7 @@ export const getBotByAccId = async (acc_id: number) => {
 export const addBot = async (payload: any) => {
     try {
         const findOne = await initDiscordBot.findOne({
-            loginToken: payload.loginToken
+            emailAddress: payload.emailAddress
         });
         if(!findOne) {
             const { id, username, phoneNumber, emailAddress } = await verifyBot(payload.loginToken);
@@ -57,6 +59,34 @@ export const addBot = async (payload: any) => {
         };
     }
 }
+
+export const editBot = async (payload: any) => {
+    try {
+        const findOne = await initDiscordBot.findOne({
+            loginToken: payload.loginToken
+        });
+        if(!findOne) {
+            throw "Not found."
+        } else {
+            console.log(payload)
+            await verifyBot(payload.newLoginToken);
+            await initDiscordBot.updateOne({
+                loginToken: payload.loginToken
+            }, {
+                $set: {
+                    loginToken: payload.newLoginToken
+                }
+            })
+        }
+    } catch (error) {
+        throw {
+            statusCode: 400,
+            message: "Something went wrong.",
+            reason: error
+        };
+    }
+}
+
 const verifyInvite = async (guild_id: string) => {
     try {
         const result = await initGuild.findOne({
@@ -284,7 +314,7 @@ export const verifyBot = async (loginToken: string) => {
     const client = new Client();
     try {
         await client.login(loginToken);
-        console.log(client.user)
+        
         const { id, username, phoneNumber, emailAddress } = client.user
         client.destroy()
         //! await client.logout(); avoid using logout otherwise token changed!
