@@ -12,6 +12,6 @@ export const discordLogsSchema = new mongoose.Schema<IAppLogs>({
     timestamps: true
 })
 
-const initDiscordLogs = mongoose.model<IAppLogs>("IDiscordBotEvent", discordLogsSchema);
+const initDiscordLogs = mongoose.model<IAppLogs>("IDiscordLog", discordLogsSchema);
 
 export default initDiscordLogs;
