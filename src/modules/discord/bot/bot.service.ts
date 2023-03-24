@@ -46,7 +46,8 @@ export const addBot = async (payload: any) => {
                 username: username,
                 phoneNumber: phoneNumber,
                 emailAddress: emailAddress,
-                role: payload.role
+                role: payload.role,
+                status: 'A'
             })
         } else {
             throw "Already exist."

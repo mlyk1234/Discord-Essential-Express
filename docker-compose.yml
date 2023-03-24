@@ -2,7 +2,7 @@ version: "3"
 
 services:
   frontend:
-    image: mlyk1234/combot-frontend:latest
+    image: mlyk1234/combot-frontend-v2:latest
     container_name: frontend
     env_file: ./.env
     ports: 
