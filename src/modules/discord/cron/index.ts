@@ -1,7 +1,7 @@
 import { ISendText, sendText } from './../bot/bot.service';
 import initDiscordBotEvent from "../../../database/models/bot-event";
 import initDiscordBot from '../../../database/models/discord-bot';
-import * as dayjs from "dayjs";
+import initDiscordLogs from '../../../database/models/app-logs';
 import { Client } from 'discord.js-selfbot-v13';
 export class discordJob {
     constructor() {}
@@ -31,6 +31,10 @@ export class discordJob {
                 }
             }  
         } catch (error) {
+            await initDiscordLogs.create({
+                category: 'getAllScheduledJob',
+                error: error,
+            })
             console.log('err', error)
         }
 
@@ -46,7 +50,7 @@ export class discordCron extends discordJob {
         console.log('[Discord Scheduled Task has been started]')
         while(true) {
            await this.getAllScheduledJob();
-           await delay(2000);
+           await delay(5000);
         }
     }
 
@@ -63,9 +67,13 @@ export class discordCron extends discordJob {
                     // await client.user.setAvatar('https://i.pinimg.com/736x/93/ca/99/93ca99fa3aab09c8c33ef01f3362bf67.jpg')
                 }
             } catch (error) {
+                await initDiscordLogs.create({
+                    category: 'awakeBot',
+                    error: error,
+                })
                 console.log('[Something went wrong] in awakeBot ==> setInterval')
             }
-        }, 60000 * 4)
+        }, 60000 * 5)
         // Discord Official: Account will be set to idle after 5 minutes of inactivity
     }
 
@@ -79,6 +87,10 @@ export class discordCron extends discordJob {
                 await client.user.setAvatar(randomAvatar[index])
             }
         } catch (error) {
+            await initDiscordLogs.create({
+                category: 'initializeBot',
+                error: error,
+            })
             console.log('[Error] in initializeBot')
         }
 

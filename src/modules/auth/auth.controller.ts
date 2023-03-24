@@ -7,16 +7,16 @@ import { register, login } from './auth.service';
 const tag = "auth"
 export const authController = (app: express.Application) => {
 
-    app.post(`${defaultURL}/${tag}/register`, 
-    async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
-        try {
-            console.log(req.body)
-            await register(req.body)
-            res.send()
-        } catch (error) {
-            res.json(error)
-        }
-    })
+    // app.post(`${defaultURL}/${tag}/register`, 
+    // async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
+    //     try {
+    //         console.log(req.body)
+    //         await register(req.body)
+    //         res.send()
+    //     } catch (error) {
+    //         res.json(error)
+    //     }
+    // })
 
     app.post(`${defaultURL}/${tag}/login`, 
     async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {

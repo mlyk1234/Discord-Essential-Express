@@ -389,7 +389,6 @@ export const sendText = async (payload: ISendText, controller?: boolean) => {
             })
         }
     } catch (error) {
-        console.log('hmm', error)
         throw "Message cannot be sent. Check logs for issues.";
     }
 }
