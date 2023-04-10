@@ -1,4 +1,4 @@
-import { addBot, getBots, botJoin, verifyBot, getBotByAccId, botListenChannel, botJoinVoice, sendText, sendReact, botJoinV2, editBot } from './bot.service';
+import { addBot, getBots, botJoin, verifyBot, getBotByAccId, botListenChannel, botJoinVoice, sendText, sendReact, botJoinV2, editBot, sendBatchReact } from './bot.service';
 import { auth, authValidator } from '../../../utils/auth-validator/index';
 import { expressValidator } from '../../../utils/class-validation/index';
 import * as express from "express";
@@ -180,6 +180,23 @@ export const discordBotController = (app: express.Application) => {
     async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
         try {
             await sendReact(req.body);
+            res.status(200).json({
+                statusCode: 200,
+                message: "Reacted."
+            })
+        } catch (error) {
+            res.status(400).json({
+                statusCode: 400,
+                message: "Failed.",
+                reason: error
+            })
+        }
+    })
+
+    app.post(`${defaultURL}/${tag}/send-batch-react`,
+    async (req: express.Request, res: express.Response<any>, next: express.NextFunction) => {
+        try {
+            await sendBatchReact(req.body);
             res.status(200).json({
                 statusCode: 200,
                 message: "Reacted."

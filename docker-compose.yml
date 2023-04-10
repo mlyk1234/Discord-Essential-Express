@@ -10,7 +10,7 @@ services:
     networks: 
     - internal
     volumes:
-      - ./frontend/build:/usr/share/nginx/html/;
+      - ./frontend/build:/usr/share/nginx/html/
   app:
     container_name: backend
     build: .

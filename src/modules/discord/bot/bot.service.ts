@@ -9,6 +9,7 @@ import { joinVoiceChannel, VoiceConnectionStatus, entersState } from '@discordjs
 import { createDiscordJSAdapter } from "./adapter";
 import initDiscordBotEvent from "../../../database/models/bot-event";
 import initGuildSetting from "../../../database/models/guild-settings";
+import * as _ from "lodash";
 export const getBots = async () => {
     try {
         const result = await initDiscordBot.find({
@@ -141,8 +142,8 @@ export const botJoin = async (payload: any) => {
 // Automation Mode
 export const botJoinV2 = async (payload: any) => {
     const client = new Client({
-        captchaService: '2captcha',
-        captchaKey: 'e46f260e341d9407a4abf7c8a7f12beb'
+        // captchaService: '2captcha',
+        // captchaKey: 'your key'
     });
     try {
         const bot = await initDiscordBot.findOne({
@@ -456,4 +457,34 @@ export const sendReact = async (payload: ISendReact) => {
         client.destroy();
         throw "Message cannot be sent. Check logs for issues.";
     }
+}
+
+interface ISendBatchReact {
+    bots: any[],
+    channel_id: string,
+    guild_id: string,
+    message_id: string,
+}
+
+const react_list = ["💻", "👨‍🎓", "💰", "📈", "⚡", "🚀", "🔥", "👏", "❤️‍🔥", "💯", "🎉", "👀", "🤩", "👍", "📌"];
+export const sendBatchReact = async (payload: ISendBatchReact) => {
+    for await (const bot of payload.bots) {
+        const shuffledReactList = _.shuffle(react_list);
+        const emojis = _.sampleSize(shuffledReactList, _.clamp(_.random(5, 6), 5, shuffledReactList.length));
+        for await(const r of emojis) {
+            const toUTF8 = encodeURIComponent(r);
+            await axios.default.put(
+                `https://discord.com/api/v9/channels/
+                ${payload.channel_id}/messages/
+                ${payload.message_id}/reactions/${toUTF8}/%40me?location=Message&type=0`,
+                null,
+                {
+                    headers: {
+                        authorization: bot.loginToken
+                    }
+                }
+            )
+        }
+    }
+
 }
